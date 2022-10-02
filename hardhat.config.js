@@ -20,6 +20,7 @@ const REPORT_GAS = process.env.REPORT_GAS || false
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY
 const GOERLI_RPC_URL = process.env.GOERLI_RPC_URL
 const PRIVATE_KEY = process.env.PRIVATE_KEY
+const PRIVATE_KEY_USER = process.env.PRIVATE_KEY_USER
 
 module.exports = {
   solidity: {
@@ -39,7 +40,7 @@ module.exports = {
     goerli: {
       chainId: 5,
       url: GOERLI_RPC_URL,
-      accounts: PRIVATE_KEY !== undefined ? [PRIVATE_KEY] : [],
+      accounts: (PRIVATE_KEY !== undefined && PRIVATE_KEY_USER !== undefined) ? [PRIVATE_KEY, PRIVATE_KEY_USER] : [],
       saveDeployments: true,
     },
     // mainnet:{

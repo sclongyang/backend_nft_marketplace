@@ -1,6 +1,6 @@
 const fs = require("fs")
 const { ethers, network } = require("hardhat")
-const { frontEndABIDir, frontEndContractsAddressFile,frontEndContractsAddressFile2, frontEndABIDir2 } = require("../helper-hardhat-config")
+const { frontEndABIDir, frontEndContractsAddressFile, frontEndContractsAddressFile2, frontEndABIDir2 } = require("../helper-hardhat-config")
 
 require("dotenv").config()
 
@@ -30,13 +30,13 @@ async function UpdateContractsAddress() {
     const contractName = "NFTMarketplace"
     const nftMarketplace = await ethers.getContract(contractName)
     const contractAddresses = JSON.parse(fs.readFileSync(frontEndContractsAddressFile, "utf8"))
-    if(chainId in contractAddresses){
-        if( !contractAddresses[chainId][`${contractName}`].includes(nftMarketplace.address)){
-            contractAddresses[chainId][`${contractName}`].push(nftMarketplace.address)
+    if (chainId in contractAddresses) {
+        if (!contractAddresses[chainId][`${contractName}`].includes(nftMarketplace.address)) {
+            contractAddresses[chainId][`${contractName}`].pushFront(nftMarketplace.address)
         }
-    }else{
-        contractAddresses[chainId] = {"NFTMarketplace":[nftMarketplace.address]}
-    }    
+    } else {
+        contractAddresses[chainId] = { "NFTMarketplace": [nftMarketplace.address] }
+    }
     fs.writeFileSync(frontEndContractsAddressFile, JSON.stringify(contractAddresses))
     fs.writeFileSync(frontEndContractsAddressFile2, JSON.stringify(contractAddresses))
 }

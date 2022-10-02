@@ -9,7 +9,7 @@ contract BaseNFT is ERC721{
     string public constant TOKEN_URL = "https://ipfs.io/ipfs/QmdryoExpgEQQQgJPoruwGJyZmz6SqV4FRTX1i73CT3iXn";
     uint256 private s_tokenId = 0;
 
-    event BaseNFTMinted(address indexed owner, uint256 tokenId);
+    event BaseNFTMinted(address indexed owner, uint256  tokenId);
 
     constructor() ERC721("BaseNFT", "BNFT"){
         s_tokenId = 0;
