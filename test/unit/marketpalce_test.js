@@ -77,7 +77,6 @@ const { developmentChains } = require("../../helper-hardhat-config");
                 // console.log(item.seller) 
                 assert(item.price.toString() == 0)                
             })
-
         })
 
         describe("modifyPrice", () => {
