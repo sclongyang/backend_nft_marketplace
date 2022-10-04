@@ -17,6 +17,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
             waitConfirmations: waitBlockConfirmations,
         }
     )
+    console.log(`fermi deploy marketpalce address: ${nftMarketplace.address}`)
     
     if(!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY){
         await verify(nftMarketplace.address, arguments)        

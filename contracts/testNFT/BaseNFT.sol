@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 error BaseNFT__TokenIdNotExsit(uint256 tokenId);
 
 contract BaseNFT is ERC721{
-    string public constant TOKEN_URL = "https://ipfs.io/ipfs/QmdryoExpgEQQQgJPoruwGJyZmz6SqV4FRTX1i73CT3iXn";
+    string public constant TOKEN_URL = "ipfs://QmdryoExpgEQQQgJPoruwGJyZmz6SqV4FRTX1i73CT3iXn";
     uint256 private s_tokenId = 0;
 
     event BaseNFTMinted(address indexed owner, uint256  tokenId);

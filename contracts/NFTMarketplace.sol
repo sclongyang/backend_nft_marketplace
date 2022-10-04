@@ -17,22 +17,17 @@ error NFTMarketplace__withdrawFailed();
 /// @author The name of the author
 /// @notice Explain to an end user what this does
 /// @dev Explain to a developer any extra details
-contract NFTMarketplace is ReentrancyGuard{
+contract NFTMarketplace is ReentrancyGuard {
     struct Item {
         address seller;
         uint256 price;
     }
 
-    event AddedItem(
-        address seller,
-        address nftAddress,
-        uint256 tokenId,
-        uint price
-    );
+    event AddedItem(address seller, address nftAddress, uint256 tokenId, uint256 price);
 
-    event DeletedItem(address seller, address nftAddress, uint256 tokenId);    
-    event BuyNFT(address buyer, address seller, address nftAddress, uint256 tokenId);    
-    event WithdrawProceeds(address user, uint256 proceeds);    
+    event DeletedItem(address seller, address nftAddress, uint256 tokenId);
+    event BuyNFT(address buyer, address seller, address nftAddress, uint256 tokenId);
+    event WithdrawProceeds(address user, uint256 proceeds);
 
     mapping(address => mapping(uint256 => Item)) private s_listItems; //tokenAddr, tokenId
     mapping(address => uint256) private s_proceeds; //userAddr, proceeds
@@ -67,11 +62,7 @@ contract NFTMarketplace is ReentrancyGuard{
         address nftAddress,
         uint256 tokenId,
         uint256 price
-    )
-        external
-        NotAdded(nftAddress, tokenId)
-        isNFTOwner(nftAddress, tokenId, msg.sender)
-    {
+    ) external NotAdded(nftAddress, tokenId) isNFTOwner(nftAddress, tokenId, msg.sender) {
         if (price <= 0) {
             revert NFTMarketplace__PriceMustBeAbove0();
         }
@@ -96,21 +87,22 @@ contract NFTMarketplace is ReentrancyGuard{
         address nftAddress,
         uint256 tokenId,
         uint256 newPrice
-    )
-        external
-        AlreadyAdded(nftAddress, tokenId)
-        isNFTOwner(nftAddress, tokenId, msg.sender)
-    {
-        if(newPrice <= 0){
+    ) external AlreadyAdded(nftAddress, tokenId) isNFTOwner(nftAddress, tokenId, msg.sender) {
+        if (newPrice <= 0) {
             revert NFTMarketplace__PriceMustBeAbove0();
         }
         s_listItems[nftAddress][tokenId].price = newPrice;
         emit AddedItem(msg.sender, nftAddress, tokenId, newPrice);
     }
 
-    function buyNFT(address nftAddress, uint256 tokenId) external payable AlreadyAdded(nftAddress, tokenId) nonReentrant {
+    function buyNFT(address nftAddress, uint256 tokenId)
+        external
+        payable
+        AlreadyAdded(nftAddress, tokenId)
+        nonReentrant
+    {
         Item memory item = s_listItems[nftAddress][tokenId];
-        if(item.price > msg.value){
+        if (item.price > msg.value) {
             revert NFTMarketplace__BuyWithNotEnoughValue(nftAddress, tokenId);
         }
         IERC721 nft = IERC721(nftAddress);
@@ -120,25 +112,29 @@ contract NFTMarketplace is ReentrancyGuard{
         emit BuyNFT(msg.sender, item.seller, nftAddress, tokenId);
     }
 
-    function withdrawProceeds()external nonReentrant{
+    function withdrawProceeds() external nonReentrant {
         uint256 proceeds = s_proceeds[msg.sender];
-        if(proceeds <= 0){
+        if (proceeds <= 0) {
             revert NFTMarketplace__withdrawNoProceeds();
         }
         s_proceeds[msg.sender] = 0;
-        (bool success, ) = payable(msg.sender).call{value:proceeds}("");
-        if(!success){
+        (bool success, ) = payable(msg.sender).call{value: proceeds}("");
+        if (!success) {
             revert NFTMarketplace__withdrawFailed();
         }
         emit WithdrawProceeds(msg.sender, proceeds);
     }
 
     // getter
-    function getAddedItem(address nftAddress, uint256 tokenId)external view returns (Item memory){
+    function getAddedItem(address nftAddress, uint256 tokenId)
+        external
+        view
+        returns (Item memory)
+    {
         return s_listItems[nftAddress][tokenId];
     }
 
-    function getProceeds(address user) external view returns (uint256){
+    function getProceeds(address user) external view returns (uint256) {
         return s_proceeds[user];
     }
 }
